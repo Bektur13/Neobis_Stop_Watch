@@ -7,7 +7,13 @@
 
 import UIKit
 
-class StopWatchController: UIViewController{
+class StopWatchController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate{
+    
+    // Properties for Timer
+    let hours = Array(0...23)
+    let minutes = Array(0...59)
+    let seconds = Array(0...59)
+    
     
     // Created Icon of Timer
     lazy var stopWatchIcon: UIImageView = {
@@ -29,7 +35,17 @@ class StopWatchController: UIViewController{
     // Created StopWatch Timer label
     lazy var stopWatchLabel: UILabel = {
         let label = UILabel()
+        label.text = "00:00:00"
+        label.font = UIFont.boldSystemFont(ofSize: 50)
         return label
+    }()
+    
+    // Created Picker View
+    lazy var timerPicker: UIPickerView = {
+        let picker = UIPickerView()
+        picker.dataSource = self
+        picker.delegate = self
+        return picker
     }()
     
     override func viewDidLoad() {
@@ -61,9 +77,46 @@ class StopWatchController: UIViewController{
         view.addSubview(stopWatchLabel)
         stopWatchLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            stopWatchLabel.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 60),
+            stopWatchLabel.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 50),
             stopWatchLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+        
+        view.addSubview(timerPicker)
+        timerPicker.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            timerPicker.topAnchor.constraint(equalTo: stopWatchLabel.bottomAnchor, constant: 30),
+            timerPicker.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
+        ])
+        
+    }
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 3
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch component {
+        case 0:
+            return hours.count
+        case 1:
+            return minutes.count
+        case 2:
+            return seconds.count
+        default: return 0
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        switch component {
+        case 0:
+            return "\(hours[row])"
+        case 1:
+            return "\(minutes[row])"
+        case 2:
+            return "\(seconds[row])"
+        default:
+            return nil
+        }
     }
 }
 
